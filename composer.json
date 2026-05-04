@@ -1,0 +1,32 @@
+{
+  "name": "kdgraphics/interactive-ai",
+  "description": "Site Assist frontend assistant for Craft CMS",
+  "type": "craft-plugin",
+  "version": "1.0.0",
+  "keywords": [
+    "craftcms",
+    "craft-plugin",
+    "ai",
+    "assistant",
+    "chat"
+  ],
+  "authors": [
+    {
+      "name": "KD Graphics"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "craftcms/cms": "^5.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "kdgraphics\\interactiveai\\": "src/"
+    }
+  },
+  "extra": {
+    "class": "kdgraphics\\interactiveai\\InteractiveAi",
+    "handle": "interactive-ai",
+    "name": "Site Assist"
+  }
+}

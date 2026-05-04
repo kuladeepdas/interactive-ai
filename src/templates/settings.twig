@@ -1,0 +1,123 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    first: true,
+    label: "Assistant Name"|t('site-assist'),
+    instructions: "This is the name the assistant will use when visitors ask who it is or what it is called."|t('site-assist'),
+    id: 'assistantName',
+    name: 'assistantName',
+    value: settings.assistantName ?? 'Site Assist',
+    maxlength: 80
+}) }}
+
+{{ forms.selectField({
+    label: "Summary Length"|t('site-assist'),
+    instructions: "Controls how many sentences the built-in summarizer prefers when summarizing pages and articles."|t('site-assist'),
+    id: 'summarySentences',
+    name: 'summarySentences',
+    value: settings.summarySentences ?? 3,
+    options: [
+      { label: '2 sentences', value: 2 },
+      { label: '3 sentences', value: 3 },
+      { label: '4 sentences', value: 4 },
+    ]
+}) }}
+
+{% if summarizerStatus is defined %}
+  <hr>
+  <div class="readable">
+    <h2>{{ "Built-in Summarizer"|t('site-assist') }}</h2>
+    <p><strong>{{ summarizerStatus.ready ? "Ready" : "Unavailable" }}</strong></p>
+    <p>{{ summarizerStatus.message ?? "No status available yet." }}</p>
+  </div>
+{% endif %}
+
+<hr>
+
+{{ forms.lightswitchField({
+    label: "Enable llama.cpp"|t('site-assist'),
+    instructions: "Use an optional llama.cpp binary inside the same web container for selected tasks like summaries and answer refinement."|t('site-assist'),
+    id: 'enableLlamaCpp',
+    name: 'enableLlamaCpp',
+    on: settings.enableLlamaCpp ?? false
+}) }}
+
+{{ forms.textField({
+    label: "llama.cpp Binary Path"|t('site-assist'),
+    instructions: "Example: /usr/local/bin/llama-cli inside the web container."|t('site-assist'),
+    id: 'llamaCppBinaryPath',
+    name: 'llamaCppBinaryPath',
+    value: settings.llamaCppBinaryPath ?? '/usr/local/bin/llama-cli'
+}) }}
+
+{{ forms.textField({
+    label: "Model Path"|t('site-assist'),
+    instructions: "Absolute path to a GGUF model inside the web container."|t('site-assist'),
+    id: 'llamaCppModelPath',
+    name: 'llamaCppModelPath',
+    value: settings.llamaCppModelPath ?? ''
+}) }}
+
+{{ forms.textField({
+    label: "Context Size"|t('site-assist'),
+    instructions: "Token context size for llama.cpp invocations."|t('site-assist'),
+    id: 'llamaCppContextSize',
+    name: 'llamaCppContextSize',
+    value: settings.llamaCppContextSize ?? 4096,
+    type: 'number',
+    min: 1024,
+    max: 32768
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Use llama.cpp for summaries"|t('site-assist'),
+    instructions: "If available, let llama.cpp generate page/article summaries before falling back to the native summarizer."|t('site-assist'),
+    id: 'useLlamaForSummaries',
+    name: 'useLlamaForSummaries',
+    on: settings.useLlamaForSummaries ?? true
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Use llama.cpp for answers"|t('site-assist'),
+    instructions: "If available, let llama.cpp refine selected assistant replies for a more natural tone."|t('site-assist'),
+    id: 'useLlamaForAnswers',
+    name: 'useLlamaForAnswers',
+    on: settings.useLlamaForAnswers ?? true
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Use llama.cpp for all responses"|t('site-assist'),
+    instructions: "If enabled, every final assistant reply will be passed through llama.cpp. This feels more model-driven, but it will usually be slower than the hybrid mode."|t('site-assist'),
+    id: 'useLlamaForAllResponses',
+    name: 'useLlamaForAllResponses',
+    on: settings.useLlamaForAllResponses ?? false
+}) }}
+
+{% if llamaCppStatus is defined %}
+  <div class="readable">
+    <h2>{{ "llama.cpp Status"|t('site-assist') }}</h2>
+    <p><strong>{{ llamaCppStatus.ready ? "Ready" : "Not Ready" }}</strong></p>
+    <p>{{ llamaCppStatus.message ?? "No status available yet." }}</p>
+
+    {% if llamaCppStatus.binaryPath %}
+      <p><strong>{{ "Binary"|t('site-assist') }}:</strong> {{ llamaCppStatus.binaryPath }}</p>
+    {% endif %}
+
+    {% if llamaCppStatus.modelPath %}
+      <p><strong>{{ "Model"|t('site-assist') }}:</strong> {{ llamaCppStatus.modelPath }}</p>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <div class="readable" id="site-assist-llama-test-panel">
+    <h2>{{ "Test llama.cpp"|t('site-assist') }}</h2>
+    <p>{{ "Open a quick local check in a new tab to confirm the configured binary and model can generate a summary and refine an assistant reply."|t('site-assist') }}</p>
+    <p>
+      <a href="{{ llamaTestActionUrl }}" class="btn" target="_blank" rel="noopener">
+        {{ "Run Test"|t('site-assist') }}
+      </a>
+    </p>
+    <p>{{ "The result page will show the configured paths, a sample summary, and a refined reply if llama.cpp is working."|t('site-assist') }}</p>
+  </div>
+{% endif %}

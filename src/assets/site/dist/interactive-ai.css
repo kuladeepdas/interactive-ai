@@ -1,0 +1,830 @@
+.interactive-ai-launcher {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  width: 64px;
+  height: 64px;
+  border: 0;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(145deg, rgba(8, 15, 32, 0.96), rgba(16, 33, 72, 0.96));
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.28), 0 24px 50px rgba(2, 6, 23, 0.55), 0 0 30px rgba(34, 211, 238, 0.28);
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  animation: interactive-ai-float 3.2s ease-in-out infinite;
+}
+
+.interactive-ai-launcher:hover,
+.interactive-ai-launcher:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.33);
+}
+
+.interactive-ai-launcher::before,
+.interactive-ai-launcher::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.interactive-ai-launcher::before {
+  width: 84px;
+  height: 84px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.5), rgba(34, 211, 238, 0));
+  top: -20px;
+  right: -12px;
+  animation: interactive-ai-orbit 4.5s linear infinite;
+}
+
+.interactive-ai-launcher::after {
+  inset: 6px;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+}
+
+.interactive-ai-launcher-core {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(125, 211, 252, 0.18), rgba(244, 114, 182, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.22);
+}
+
+.interactive-ai-launcher svg {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.interactive-ai-launcher-ring {
+  position: absolute;
+  inset: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  pointer-events: none;
+}
+
+.interactive-ai-launcher-ring.is-one {
+  animation: interactive-ai-signal 3.2s linear infinite;
+}
+
+.interactive-ai-launcher-ring.is-two {
+  inset: 2px;
+  border-color: rgba(244, 114, 182, 0.16);
+  animation: interactive-ai-signal 4.4s linear infinite reverse;
+}
+
+.interactive-ai-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 1101;
+  display: none;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.interactive-ai-shell.is-open {
+  display: flex;
+}
+
+.interactive-ai-modal {
+  width: min(430px, 100%);
+  height: min(760px, calc(100vh - 48px));
+  overflow: hidden;
+  pointer-events: auto;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(8, 15, 32, 0.98), rgba(4, 10, 24, 0.98));
+  box-shadow: 0 30px 90px rgba(2, 6, 23, 0.6), 0 0 0 1px rgba(125, 211, 252, 0.08);
+  color: #dbeafe;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(26px) scale(0.96);
+  opacity: 0;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.interactive-ai-shell.is-open .interactive-ai-modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.interactive-ai-header {
+  position: relative;
+  padding: 24px 24px 18px;
+  background:
+    linear-gradient(135deg, rgba(11, 17, 36, 0.9), rgba(14, 36, 73, 0.78)),
+    linear-gradient(145deg, #071121, #101d42);
+  color: #fff;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(125, 211, 252, 0.12);
+}
+
+.interactive-ai-header::before {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  right: -90px;
+  top: -120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.28), rgba(34, 211, 238, 0));
+  animation: interactive-ai-pulse 5s ease-in-out infinite;
+}
+
+.interactive-ai-header-grid,
+.interactive-ai-header-orbit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.interactive-ai-header-grid {
+  background-image:
+    linear-gradient(rgba(125, 211, 252, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.1) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent);
+  opacity: 0.25;
+}
+
+.interactive-ai-header-orbit::before,
+.interactive-ai-header-orbit::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+}
+
+.interactive-ai-header-orbit::before {
+  width: 180px;
+  height: 180px;
+  top: -84px;
+  right: -32px;
+  animation: interactive-ai-orbit 12s linear infinite;
+}
+
+.interactive-ai-header-orbit::after {
+  width: 120px;
+  height: 120px;
+  top: -54px;
+  right: 18px;
+  border-color: rgba(244, 114, 182, 0.2);
+  animation: interactive-ai-orbit 8s linear infinite reverse;
+}
+
+.interactive-ai-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.interactive-ai-presence {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.interactive-ai-avatar {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(160deg, rgba(34, 211, 238, 0.3), rgba(14, 116, 144, 0.1)),
+    linear-gradient(180deg, rgba(7, 17, 33, 0.98), rgba(8, 24, 47, 0.94));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 0 0 1px rgba(125, 211, 252, 0.2), 0 14px 28px rgba(2, 6, 23, 0.35), 0 0 24px rgba(34, 211, 238, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.interactive-ai-avatar-core {
+  position: absolute;
+  inset: 11px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dff8ff;
+}
+
+.interactive-ai-avatar-core svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.28));
+}
+
+.interactive-ai-avatar-pulse {
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  animation: interactive-ai-signal 4s linear infinite;
+}
+
+.interactive-ai-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font: 600 12px/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  color: rgba(224, 242, 254, 0.88);
+}
+
+.interactive-ai-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #67e8f9;
+  box-shadow: 0 0 0 0 rgba(103, 232, 249, 0.8);
+  animation: interactive-ai-status-dot 2s ease-out infinite;
+}
+
+.interactive-ai-title {
+  margin: 0;
+  font: 700 22px/1.1 "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.interactive-ai-subtitle {
+  margin: 8px 0 0;
+  font: 500 13px/1.5 "Avenir Next", "Segoe UI", sans-serif;
+  color: rgba(191, 219, 254, 0.88);
+}
+
+.interactive-ai-close {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(125, 211, 252, 0.1);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.interactive-ai-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.interactive-ai-close:hover,
+.interactive-ai-close:focus-visible {
+  transform: rotate(8deg) scale(1.05);
+  background: rgba(125, 211, 252, 0.18);
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.2), 0 0 24px rgba(34, 211, 238, 0.16);
+}
+
+.interactive-ai-messages {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background:
+    linear-gradient(180deg, rgba(6, 13, 28, 0.24), rgba(6, 13, 28, 0)),
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.04), transparent 24%);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(103, 232, 249, 0.46) rgba(8, 17, 34, 0.5);
+}
+
+.interactive-ai-messages::-webkit-scrollbar {
+  width: 12px;
+}
+
+.interactive-ai-messages::-webkit-scrollbar-track {
+  background: rgba(8, 17, 34, 0.42);
+  border-radius: 999px;
+}
+
+.interactive-ai-messages::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(180deg, rgba(103, 232, 249, 0.72), rgba(29, 78, 216, 0.72));
+  border: 3px solid rgba(8, 17, 34, 0.42);
+  border-radius: 999px;
+}
+
+.interactive-ai-messages::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(125, 211, 252, 0.9), rgba(236, 72, 153, 0.72));
+}
+
+.interactive-ai-message {
+  max-width: 88%;
+  padding: 14px 16px;
+  border-radius: 20px;
+  font: 500 14px/1.55 "Avenir Next", "Segoe UI", sans-serif;
+  white-space: pre-wrap;
+  transform: translateY(10px);
+  opacity: 0;
+  animation: interactive-ai-message-in 240ms ease forwards;
+}
+
+.interactive-ai-message-content {
+  display: inline;
+}
+
+.interactive-ai-message-content em {
+  font-style: italic;
+  color: rgba(236, 253, 255, 0.92);
+}
+
+.interactive-ai-message-content.is-typing-text::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 3px;
+  border-radius: 999px;
+  background: rgba(103, 232, 249, 0.9);
+  vertical-align: text-bottom;
+  animation: interactive-ai-caret 0.9s steps(1) infinite;
+}
+
+.interactive-ai-message.is-assistant {
+  align-self: flex-start;
+  border-top-left-radius: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  background: linear-gradient(180deg, rgba(12, 21, 42, 0.94), rgba(8, 17, 34, 0.94));
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.3);
+}
+
+.interactive-ai-message.is-assistant::before {
+  content: "✦";
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.1);
+  color: #67e8f9;
+  font-size: 12px;
+  vertical-align: top;
+}
+
+.interactive-ai-message.is-user {
+  align-self: flex-end;
+  border-top-right-radius: 8px;
+  background: linear-gradient(145deg, #1d4ed8, #0f766e);
+  color: #fff;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.26);
+}
+
+.interactive-ai-message.is-typing {
+  min-width: 92px;
+}
+
+.interactive-ai-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.interactive-ai-typing span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #67e8f9;
+  opacity: 0.3;
+  animation: interactive-ai-typing 1.1s infinite ease-in-out;
+}
+
+.interactive-ai-typing span:nth-child(2) {
+  animation-delay: 0.14s;
+}
+
+.interactive-ai-typing span:nth-child(3) {
+  animation-delay: 0.28s;
+}
+
+.interactive-ai-actions,
+.interactive-ai-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.interactive-ai-chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: rgba(125, 211, 252, 0.08);
+  color: #dbeafe;
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  cursor: pointer;
+  font: 600 12px/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+.interactive-ai-actions.is-revealing .interactive-ai-chip,
+.interactive-ai-suggestions.is-revealing .interactive-ai-chip,
+.interactive-ai-chip.is-pending {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  pointer-events: none;
+}
+
+.interactive-ai-chip.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.interactive-ai-chip.is-action {
+  background: rgba(244, 114, 182, 0.12);
+  border-color: rgba(244, 114, 182, 0.2);
+}
+
+.interactive-ai-chip:hover,
+.interactive-ai-chip:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(34, 211, 238, 0.14);
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.2), 0 12px 22px rgba(2, 6, 23, 0.24);
+}
+
+.interactive-ai-input {
+  padding: 16px 18px 18px;
+  border-top: 1px solid rgba(125, 211, 252, 0.12);
+  background:
+    linear-gradient(180deg, rgba(6, 12, 24, 0.88), rgba(4, 10, 20, 0.94));
+}
+
+.interactive-ai-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.interactive-ai-voice-row {
+  margin-top: 10px;
+}
+
+.interactive-ai-textarea {
+  width: 100%;
+  min-height: 56px;
+  max-height: 132px;
+  resize: vertical;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(6, 13, 28, 0.9);
+  color: #eff6ff;
+  font: 500 14px/1.45 "Avenir Next", "Segoe UI", sans-serif;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.interactive-ai-textarea::placeholder {
+  color: rgba(191, 219, 254, 0.45);
+}
+
+.interactive-ai-textarea:focus {
+  outline: none;
+  border-color: rgba(103, 232, 249, 0.5);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.1), 0 0 24px rgba(34, 211, 238, 0.08);
+  transform: translateY(-1px);
+}
+
+.interactive-ai-icon-button,
+.interactive-ai-send {
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.interactive-ai-icon-button {
+  position: relative;
+  background: rgba(125, 211, 252, 0.08);
+  color: #67e8f9;
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.12);
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+
+.interactive-ai-icon-button.is-ready {
+  background: rgba(34, 211, 238, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.18), 0 0 0 1px rgba(34, 211, 238, 0.08);
+}
+
+.interactive-ai-icon-button.is-armed {
+  background: linear-gradient(145deg, rgba(14, 165, 233, 0.18), rgba(236, 72, 153, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(244, 114, 182, 0.18), 0 0 18px rgba(244, 114, 182, 0.14);
+}
+
+.interactive-ai-icon-button.is-recording {
+  background: linear-gradient(145deg, #ef4444, #ec4899);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 0 0 6px rgba(244, 114, 182, 0.12);
+  animation: interactive-ai-recording 1.1s ease-in-out infinite;
+}
+
+.interactive-ai-send {
+  background: linear-gradient(145deg, #0ea5e9, #1d4ed8 55%, #ec4899);
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(14, 165, 233, 0.24), 0 0 24px rgba(236, 72, 153, 0.14);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.interactive-ai-icon-button svg,
+.interactive-ai-send svg {
+  width: 22px;
+  height: 22px;
+}
+
+.interactive-ai-icon-button svg {
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.12));
+}
+
+.interactive-ai-mic-live {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  z-index: 3;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.interactive-ai-mic-live span {
+  width: 2px;
+  border-radius: 999px;
+  background: #67e8f9;
+  height: 4px;
+  transform-origin: center bottom;
+}
+
+.interactive-ai-icon-button.is-recording .interactive-ai-mic-live span {
+  background: #fff;
+}
+
+.interactive-ai-mic-live span:nth-child(1) {
+  animation: interactive-ai-listening-bars 0.9s ease-in-out infinite;
+}
+
+.interactive-ai-mic-live span:nth-child(2) {
+  animation: interactive-ai-listening-bars 0.9s ease-in-out 0.14s infinite;
+}
+
+.interactive-ai-mic-live span:nth-child(3) {
+  animation: interactive-ai-listening-bars 0.9s ease-in-out 0.28s infinite;
+}
+
+.interactive-ai-icon-button.is-recording .interactive-ai-mic-live {
+  opacity: 1;
+  transform: scale(1);
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.interactive-ai-icon-button.is-recording svg {
+  transform: scale(0.94);
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
+}
+
+.interactive-ai-send svg {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.12));
+}
+
+.interactive-ai-icon-button:hover,
+.interactive-ai-icon-button:focus-visible,
+.interactive-ai-send:hover,
+.interactive-ai-send:focus-visible {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.interactive-ai-icon-button:hover,
+.interactive-ai-icon-button:focus-visible {
+  color: #a5f3fc;
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.18), 0 0 20px rgba(34, 211, 238, 0.12);
+}
+
+.interactive-ai-send:hover,
+.interactive-ai-send:focus-visible {
+  box-shadow: 0 16px 32px rgba(14, 165, 233, 0.3), 0 0 30px rgba(236, 72, 153, 0.18);
+}
+
+.interactive-ai-footnote {
+  margin-top: 10px;
+  color: rgba(191, 219, 254, 0.58);
+  font: 500 11px/1.4 "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.interactive-ai-voice-toggle {
+  width: 100%;
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(125, 211, 252, 0.06);
+  color: #dbeafe;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font: 600 12px/1.2 "Avenir Next", "Segoe UI", sans-serif;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.interactive-ai-voice-toggle:hover,
+.interactive-ai-voice-toggle:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(34, 211, 238, 0.1);
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.16), 0 12px 24px rgba(2, 6, 23, 0.18);
+}
+
+.interactive-ai-voice-toggle.is-active {
+  border-color: rgba(34, 211, 238, 0.24);
+  background: rgba(34, 211, 238, 0.1);
+}
+
+.interactive-ai-voice-toggle.is-continuous {
+  border-color: rgba(244, 114, 182, 0.26);
+  background: rgba(244, 114, 182, 0.1);
+}
+
+.interactive-ai-voice-toggle.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.interactive-ai-voice-toggle-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.8);
+  box-shadow: 0 0 0 0 rgba(148, 163, 184, 0.35);
+}
+
+.interactive-ai-voice-toggle.is-active .interactive-ai-voice-toggle-dot {
+  background: #67e8f9;
+  box-shadow: 0 0 0 0 rgba(103, 232, 249, 0.35);
+  animation: interactive-ai-status-dot 2s ease-out infinite;
+}
+
+.interactive-ai-voice-toggle.is-continuous .interactive-ai-voice-toggle-dot {
+  background: #f472b6;
+  box-shadow: 0 0 0 0 rgba(244, 114, 182, 0.4);
+}
+
+.interactive-ai-voice-toggle-label {
+  flex: 1;
+  text-align: left;
+}
+
+.interactive-ai-shell.is-thinking .interactive-ai-avatar {
+  animation: interactive-ai-float 1.8s ease-in-out infinite;
+}
+
+.interactive-ai-shell.is-thinking .interactive-ai-avatar-core {
+  animation: interactive-ai-pulse 1.8s ease-in-out infinite;
+}
+
+.interactive-ai-shell.is-listening .interactive-ai-avatar {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 0 0 8px rgba(248, 113, 113, 0.18), 0 12px 22px rgba(15, 23, 42, 0.18);
+}
+
+.interactive-ai-shell.is-listening .interactive-ai-avatar-pulse {
+  border-color: rgba(244, 114, 182, 0.32);
+  animation-duration: 1.4s;
+}
+
+.interactive-ai-shell.is-speaking .interactive-ai-avatar {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 0 0 8px rgba(34, 211, 238, 0.18), 0 12px 22px rgba(15, 23, 42, 0.18);
+}
+
+.interactive-ai-shell.is-speaking .interactive-ai-avatar-core {
+  animation: interactive-ai-pulse 1.4s ease-in-out infinite;
+}
+
+.interactive-ai-shell.is-speaking .interactive-ai-avatar-pulse {
+  border-color: rgba(34, 211, 238, 0.34);
+  animation-duration: 1.2s;
+}
+
+.interactive-ai-shell.is-thinking .interactive-ai-status-dot,
+.interactive-ai-shell.is-listening .interactive-ai-status-dot,
+.interactive-ai-shell.is-speaking .interactive-ai-status-dot {
+  background: #f472b6;
+}
+
+@keyframes interactive-ai-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes interactive-ai-orbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes interactive-ai-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes interactive-ai-status-dot {
+  0% { box-shadow: 0 0 0 0 rgba(125, 211, 252, 0.8); }
+  100% { box-shadow: 0 0 0 10px rgba(125, 211, 252, 0); }
+}
+
+@keyframes interactive-ai-message-in {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes interactive-ai-typing {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+
+@keyframes interactive-ai-recording {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+
+@keyframes interactive-ai-listening-bars {
+  0%, 100% { height: 4px; opacity: 0.45; }
+  50% { height: 8px; opacity: 1; }
+}
+
+@keyframes interactive-ai-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes interactive-ai-signal {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.55; }
+  50% { transform: rotate(180deg) scale(1.05); opacity: 0.95; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.55; }
+}
+
+@media (max-width: 640px) {
+  .interactive-ai-shell {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    pointer-events: auto;
+  }
+
+  .interactive-ai-modal {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .interactive-ai-launcher {
+    right: 18px;
+    bottom: 18px;
+    width: 58px;
+    height: 58px;
+    border-radius: 20px;
+  }
+}
